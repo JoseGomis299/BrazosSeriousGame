@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProjectUtils.ObjectPooling
+namespace BugsGame.ProjectUtils.ObjectPooling
 {
     public class ObjectPool : MonoBehaviour
     {

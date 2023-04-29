@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -8,7 +6,7 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
-namespace ProjectUtils.Helpers
+namespace BugsGame.ProjectUtils.Helpers
 {
     public static class Helpers 
     {
@@ -60,29 +58,7 @@ namespace ProjectUtils.Helpers
 
             return angle;
         }
-
-        /// <summary>
-        /// <para>Scales the object to a target scale in a determined time</para>
-        /// <param name="targetScale">The target scale</param>
-        /// <param name="time">The duration in seconds of the scaling effect</param>
-        /// </summary>
-        public static void DoScale(this Transform transform, Vector3 targetScale, float time)  =>  CoroutineControllerNonStatic.Instance.StartC(DoScaleEnumerator(transform, targetScale, time));
-        private static IEnumerator DoScaleEnumerator(Transform transform, Vector3 targetScale, float time)
-        {
-            float timer = Time.unscaledDeltaTime;
-            Vector3 initialScale = transform.localScale;
-            Vector3 scaleDelta = targetScale - initialScale;
-
-            while (timer < time)
-            {
-                transform.localScale = initialScale + scaleDelta * (timer/time);
-                yield return null;
-                timer += Time.unscaledDeltaTime;
-            }
-
-            transform.localScale = targetScale;
-        }
-
+        
         /// <summary>
         /// <para>Scales the object to a target scale in a determined time</para>
         /// <param name="targetScale">The target scale</param>
@@ -117,32 +93,8 @@ namespace ProjectUtils.Helpers
             }
 
             transform.rotation = targetRotation;
-        } 
-        
-        /// <summary>
-        /// <para>Moves the object, making a shake movement with a certain magnitude in a determined time</para>
-        /// <param name="magnitude">The magnitude of the movement</param>
-        /// <param name="time">The duration in seconds of the shaking effect</param>
-        /// <param name="moveZ">Determines if the object moves in the z axis</param>
-        /// </summary>
-        public static void DoShake(this Transform transform, float magnitude, float time, bool moveZ = false) => CoroutineControllerNonStatic.Instance.StartC(DoShakeEnumerator(transform, magnitude, time, moveZ));
-        private static IEnumerator DoShakeEnumerator(Transform transform, float magnitude, float time, bool moveZ)
-        {
-            float duration = Time.unscaledTime + time;
-            Vector3 initialPosition = transform.position;
-            Vector3 newPosition = initialPosition;
-
-            while (Time.unscaledTime < duration)
-            {
-                newPosition.x = initialPosition.x + Random.value * magnitude;
-                newPosition.y = initialPosition.y + Random.value * magnitude;
-                if(moveZ) newPosition.z = initialPosition.z + Random.value * magnitude;
-                transform.position = newPosition;
-                yield return null;
-            }
-            transform.position = initialPosition;
         }
-        
+
         /// <summary>
         /// <para>Moves the object, making a shake movement with a certain magnitude in a determined time</para>
         /// <param name="magnitude">The magnitude of the movement</param>
@@ -166,60 +118,6 @@ namespace ProjectUtils.Helpers
             transform.position = initialPosition;
         }
 
-        private static Dictionary<int, bool> _blinking;
-        public static bool IsBlinking(this SpriteRenderer spriteRenderer)
-        {
-            _blinking ??= new Dictionary<int, bool>();
-        
-            int id = spriteRenderer.GetHashCode();
-            if (!_blinking.ContainsKey(id)) _blinking.Add(id , false);
-        
-            return _blinking[id];
-        }
-        public static bool IsBlinking(this Image spriteRenderer)
-        {
-            _blinking ??= new Dictionary<int, bool>();
-        
-            int id = spriteRenderer.GetHashCode();
-            if (!_blinking.ContainsKey(id)) _blinking.Add(id , false);
-        
-            return _blinking[id];
-        } 
-    
-        /// <summary>
-        /// <para>Makes a blinking effect to the object</para>
-        /// <param name="duration">The duration in seconds of the blinking effect</param>
-        /// <param name="ticks">The number of times you want the object to blink</param>
-        /// <param name="targetColor">The color to change in every blink, normally transparent or white</param>
-        /// </summary>
-        public static void DoBlink(this SpriteRenderer spriteRenderer, float duration, int ticks, Color targetColor) => CoroutineControllerNonStatic.Instance.StartC(DoBlinkEnumerator(spriteRenderer, duration, ticks, targetColor));
-        private static IEnumerator DoBlinkEnumerator(SpriteRenderer spriteRenderer, float duration, int ticks, Color targetColor)
-        {
-            if (ticks <= 0) yield break;
-        
-            _blinking ??= new Dictionary<int, bool>();
-            int id = spriteRenderer.GetHashCode();
-            if(!_blinking.ContainsKey(id)) _blinking.Add( id , true);
-            else _blinking[id] = true;
-
-            float timer = 0;
-            Color initialColor = spriteRenderer.color;
-            WaitForSeconds waitForSeconds = new WaitForSeconds(duration / ticks/2);
-        
-            while (timer<duration)
-            {
-                initialColor = spriteRenderer.color;
-                spriteRenderer.color = targetColor;
-                yield return waitForSeconds;
-                spriteRenderer.color = initialColor;
-                yield return waitForSeconds;
-                timer += duration / ticks;
-            }
-
-            spriteRenderer.color = initialColor;
-            _blinking[id] = false;
-        }
-        
         /// <summary>
         /// <para>Makes a blinking effect to the object</para>
         /// <param name="duration">The duration in seconds of the blinking effect</param>
@@ -246,41 +144,7 @@ namespace ProjectUtils.Helpers
 
             spriteRenderer.color = initialColor;
         }
-    
-        /// <summary>
-        /// <para>Makes a blinking effect to the object</para>
-        /// <param name="duration">The duration in seconds of the blinking effect</param>
-        /// <param name="ticks">The number of times you want the object to blink</param>
-        /// <param name="targetColor">The color to change in every blink, normally transparent or white</param>
-        /// </summary>
-        public static void DoBlink(this Image image, float duration, int ticks, Color targetColor) => CoroutineControllerNonStatic.Instance.StartC(DoBlinkEnumerator(image, duration, ticks, targetColor));
-        private static IEnumerator DoBlinkEnumerator(Image image, float duration, int ticks, Color targetColor)
-        {
-            if (ticks <= 0) yield break;
-        
-            _blinking ??= new Dictionary<int, bool>();
-            int id = image.GetHashCode();
-            if(!_blinking.ContainsKey(id)) _blinking.Add( id , true);
-            else _blinking[id] = true;
 
-            float timer = 0;
-            Color initialColor = image.color;
-            WaitForSeconds waitForSeconds = new WaitForSeconds(duration / ticks/2);
-        
-            while (timer<duration)
-            {
-                initialColor = image.color;
-                image.color = targetColor;
-                yield return waitForSeconds;
-                image.color = initialColor;
-                yield return waitForSeconds;
-                timer += duration / ticks;
-            }
-
-            image.color = initialColor;
-            _blinking[id] = false;
-        }
-        
         /// <summary>
         /// <para>Makes a blinking effect to the object</para>
         /// <param name="duration">The duration in seconds of the blinking effect</param>
@@ -307,29 +171,6 @@ namespace ProjectUtils.Helpers
             image.color = initialColor;
         }
 
-        
-        /// <summary>
-        /// <para>Makes the object transition from one color to another in a certain time</para>
-        /// <param name="targetColor">The final color</param>
-        /// <param name="duration">The duration in seconds of the transition</param>
-        /// </summary>
-        public static void DoChangeColor(this SpriteRenderer spriteRenderer, Color targetColor, float duration) => CoroutineControllerNonStatic.Instance.StartC(DoChangeColorEnumerator(spriteRenderer, targetColor, duration));
-        private static IEnumerator DoChangeColorEnumerator(SpriteRenderer spriteRenderer, Color targetColor, float duration)
-        {
-            float timer = Time.unscaledDeltaTime;
-            Color initialColor = spriteRenderer.color;
-            Color colorDelta = targetColor - initialColor;
-        
-            while (timer<duration)
-            {
-                spriteRenderer.color = initialColor + colorDelta*(timer/duration);
-                yield return null;
-                timer += Time.unscaledDeltaTime;
-            }
-
-            spriteRenderer.color = targetColor;
-        }
-        
         /// <summary>
         /// <para>Makes the object transition from one color to another in a certain time</para>
         /// <param name="targetColor">The final color</param>
@@ -350,28 +191,7 @@ namespace ProjectUtils.Helpers
 
             spriteRenderer.color = targetColor;
         }
-    
-        /// <summary>
-        /// <para>Makes the object transition from one color to another in a certain time</para>
-        /// <param name="targetColor">The final color</param>
-        /// <param name="duration">The duration in seconds of the transition</param>
-        /// </summary>
-        public static void DoChangeColor(this Image image, Color targetColor , float duration) => CoroutineControllerNonStatic.Instance.StartC(DoChangeColorEnumerator(image, targetColor, duration));
-        private static IEnumerator DoChangeColorEnumerator(Image image, Color targetColor, float duration)
-        {
-            float timer = Time.unscaledDeltaTime;
-            Color initialColor = image.color;
-            Color colorDelta = targetColor - initialColor;
         
-            while (timer<duration)
-            {
-                image.color = initialColor + colorDelta*(timer/duration);
-                yield return null;
-                timer += Time.unscaledDeltaTime;
-            }
-
-            image.color = targetColor;
-        }
         
         /// <summary>
         /// <para>Makes the object transition from one color to another in a certain time</para>

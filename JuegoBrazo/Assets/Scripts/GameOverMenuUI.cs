@@ -1,50 +1,52 @@
-using System;
-using ProjectUtils.Helpers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameOverMenuUI : MonoBehaviour
+namespace BugsGame
 {
-    [SerializeField] private Button restartButton;
-    [SerializeField] private Button quitButton;
+    public class GameOverMenuUI : MonoBehaviour
+    {
+        [SerializeField] private Button restartButton;
+        [SerializeField] private Button quitButton;
 
-    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] private TMP_Text highScoreText;
-    
-    [SerializeField] private AudioClip buttonSound;
-    private void Awake()
-    {
-        if (restartButton != null) restartButton.onClick.AddListener(RestartButtonAction);
-        if (quitButton != null) quitButton.onClick.AddListener(HomeButtonAction);
-        
-        gameObject.SetActive(false);
-    }
+        [SerializeField] private TMP_Text scoreText;
+        [SerializeField] private TMP_Text highScoreText;
 
-    private void OnEnable()
-    {
-        Time.timeScale = 0;
-        SetScoreTexts(GameManager.instance.score);
-    }
+        [SerializeField] private AudioClip buttonSound;
 
-    public void SetScoreTexts(int score)
-    {
-        scoreText.text ="SCORE: " + GameManager.instance.score;
-        highScoreText.text ="HIGH SCORE: "+ PlayerPrefs.GetInt("bugsHighScore", 0);
-    }
+        private void Awake()
+        {
+            if (restartButton != null) restartButton.onClick.AddListener(RestartButtonAction);
+            if (quitButton != null) quitButton.onClick.AddListener(HomeButtonAction);
 
-    private void HomeButtonAction()
-    {
-        AudioManager.Instance.PlaySound(buttonSound);
-        quitButton.enabled = false;
-        SceneManager.LoadScene(0);
-    }
-    
-    private void RestartButtonAction()
-    {
-        AudioManager.Instance.PlaySound(buttonSound);
-        restartButton.enabled = false;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            gameObject.SetActive(false);
+        }
+
+        private void OnEnable()
+        {
+            Time.timeScale = 0;
+            SetScoreTexts(GameManager.instance.score);
+        }
+
+        public void SetScoreTexts(int score)
+        {
+            scoreText.text = "SCORE: " + GameManager.instance.score;
+            highScoreText.text = "HIGH SCORE: " + PlayerPrefs.GetInt("bugsHighScore", 0);
+        }
+
+        private void HomeButtonAction()
+        {
+            AudioManager.Instance.PlaySound(buttonSound);
+            quitButton.enabled = false;
+            SceneManager.LoadScene(0);
+        }
+
+        private void RestartButtonAction()
+        {
+            AudioManager.Instance.PlaySound(buttonSound);
+            restartButton.enabled = false;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     }
 }
