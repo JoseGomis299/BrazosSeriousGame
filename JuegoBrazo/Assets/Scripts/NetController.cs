@@ -50,7 +50,7 @@ namespace BugsGame
         private async void Catch()
         {
             _catching = true;
-            _model.transform.position = new Vector3(target.position.x, _model.transform.position.y, target.position.z);
+            _model.transform.position = new Vector3(target.position.x, _model.transform.position.y, target.position.z-17);
             _model.SetActive(true);
             AudioManager.Instance.PlaySound(netSound);
             await _model.transform.DoRotateAsync(Quaternion.Euler(90, 0, 0), 0.2f);
@@ -61,6 +61,7 @@ namespace BugsGame
                 var bug = bugCollider.GetComponent<Bug>();
                 GameManager.instance.AddScore(bug.score);
                 if (bug.time != 0) GameManager.instance.AddTime(bug.time);
+                AudioManager.Instance.PlaySound(bug.catchSound);
                 bug.gameObject.SetActive(false);
                 GameObject addition = ObjectPool.Instance.InstantiateFromPoolIndex(3,
                     RectTransformUtility.WorldToScreenPoint(Helpers.Camera, bug.transform.position),

@@ -24,10 +24,22 @@ namespace BugsGame
             else text.text = $"<color=\"red\">{score}";
 
             speed = initialMovementSpeed;
-            transform.localScale = Vector3.one * (2 * Random.Range(1f, 1.1f));
+            transform.localScale = Vector3.one * Random.Range(1.6f, 1.3f);
             speed *= Random.Range(0.8f, 1.3f);
             text.color = initialColor;
             StartCoroutine(Transition(transitionDuration, score));
+        }
+        
+        public void SetStatsTime(int time)
+        {
+            text = GetComponent<TextMeshProUGUI>();
+            text.text = time > 0 ? $"<color=\"green\">+{time}" : $"<color=\"red\">{time}";
+
+            speed = initialMovementSpeed;
+            transform.localScale = Vector3.one * Random.Range(2.5f, 3.5f);
+            speed *= Random.Range(1.5f, 2f);
+            text.color = initialColor;
+            StartCoroutine(Transition(transitionDuration, time));
         }
 
 

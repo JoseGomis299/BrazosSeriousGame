@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.IO.Ports; //Si da errores ir a Project Settings > Player > Api Compatibility Leve > cambiar a .NET Framework
 
-namespace BugsGame
-{
     public class ArmInput
     {
 
@@ -15,7 +13,7 @@ namespace BugsGame
         //Serial port
         private static float[] valuesSerialPorts = new float[4];
 
-        private static SerialPort serialPort = new SerialPort("COM4", 9600);
+        private static SerialPort serialPort = new SerialPort("COM3", 9600);
         //en funci�n de Serial.begin(n); en el arduino
 
         //Señales para detectar las señales por flanco de subida y bajada
@@ -199,4 +197,3 @@ namespace BugsGame
         }
 
     }
-}

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -12,6 +14,7 @@ namespace BugsGame
         private Vector3 _moveDirection;
         [field: SerializeReference] public bool badBug { get; private set; }
         private Vector4 _bounds;
+        [field: SerializeReference] public AudioClip catchSound { get; private set; }
 
         public void SetParameters()
         {
@@ -19,10 +22,17 @@ namespace BugsGame
                              transform.position;
             _moveDirection.Normalize();
             Transform child = transform.GetChild(0);
-            child.rotation = Quaternion.LookRotation(_moveDirection, Vector3.up);
-            child.localScale = Vector3.one * Random.Range(0.8f, 1.2f);
+            
+            child.rotation = Quaternion.LookRotation(-_moveDirection, Vector3.up);
+            child.localScale *= Random.Range(0.9f, 1.1f);
             _speed = initialSpeed + Random.Range(-1f, 3f);
-            _bounds = GameManager.instance.bounds * 1.2f;
+            _bounds = GameManager.instance.bounds * 1.5f;
+            
+            List<Material> l = new List<Material>();
+            child.GetChild(1).GetComponent<Renderer>().GetMaterials(l);
+            l[0].SetTextureOffset("_MainTex",  new Vector2(Random.Range(0f, 1f), Random.Range(0f, 1f)));
+            var temp = Random.Range(0.5f, 0.7f);
+            l[0].SetTextureScale("_MainTex",  new Vector2(temp, temp));
         }
 
         private void Update()

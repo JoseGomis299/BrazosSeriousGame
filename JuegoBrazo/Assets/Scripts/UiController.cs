@@ -19,7 +19,7 @@ namespace BugsGame
         {
             GameManager.instance.onTimerChange += (time, timeAdded) =>
             {
-                int cSeconds = (int)(60 * (Mathf.Floor(time * 100) - Mathf.Floor(time) * 100) / 100);
+                int cSeconds = (int)(Mathf.Floor(time * 100) - Mathf.Floor(time) * 100);
                 int seconds = (int)time;
 
                 var cSecondsString = cSeconds < 10 ? "0" + cSeconds : cSeconds.ToString();
@@ -32,7 +32,7 @@ namespace BugsGame
                 GameObject addition =
                     ObjectPool.Instance.InstantiateFromPoolIndex(3, timerText.transform.position, Quaternion.identity,
                         false);
-                addition.GetComponent<ScoreAddition>().SetStats((int)timeAdded);
+                addition.GetComponent<ScoreAddition>().SetStatsTime((int)timeAdded);
                 addition.transform.SetParent(timerText.transform);
                 addition.transform.localPosition = new Vector3(-300, -65, 0);
             };

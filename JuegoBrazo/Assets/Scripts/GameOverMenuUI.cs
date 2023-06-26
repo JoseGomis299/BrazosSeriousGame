@@ -25,6 +25,7 @@ namespace BugsGame
 
         private void OnEnable()
         {
+            restartButton.Select();
             Time.timeScale = 0;
             SetScoreTexts(GameManager.instance.score);
         }
